@@ -1,25 +1,28 @@
-# Architecture Diagram
+# Airflow ETL Architecture
 
+```mermaid
+flowchart TB
+    A[Source CSV] --> B[Airflow DAG Scheduler]
+    B --> C[Extract Operator]
+    C --> D[Transform Operator]
+    D --> E[Load Operator]
+    E --> F[Quality Check Operator]
+    F --> G[(PostgreSQL raw + analytics)]
+    G --> H[Dashboard / BI]
 
-mermaid
-flowchart LR
-    A[Source Systems] --> B[Ingestion Layer]
-    B --> C[Raw Storage]
-    C --> D[Transformation Layer]
-    D --> E[Analytics Warehouse]
-    E --> F[BI / Reporting]
-
-    subgraph Runtime
-      G[Docker Compose Services]
-    end
-
-    G --> B
-    G --> D
+    B -. Variables .-> C
+    B -. Variables .-> D
+    B -. Variables .-> E
+    C -. Logs .-> I[Airflow Logs]
+    D -. Logs .-> I
+    E -. Logs .-> I
+    F -. Logs .-> I
+```
 
 ## Components
-- Source Systems: External APIs, files, or databases
-- Ingestion Layer: Batch or streaming extract jobs
-- Raw Storage: Landing zone for unmodeled data
-- Transformation Layer: SQL/Python transformations
-- Analytics Warehouse: Curated analytical models
-- BI / Reporting: Dashboards and downstream consumption
+- Scheduling: Daily DAG schedule at 02:00
+- Operators: PythonOperator for ETL + BashOperator for run logs
+- Variables: Runtime source and database configuration
+- Logging: Task-level logs in Airflow task logs
+- Retries: Default retries on ETL/quality tasks
+- Storage: Postgres schemas `raw` and `analytics`

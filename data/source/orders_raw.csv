@@ -1,0 +1,13 @@
+order_id,order_timestamp,customer_id,product,category,units,unit_price,discount_pct,shipping_cost,state
+o1001,2026-06-01T09:10:00Z,c001,Wireless Mouse,Electronics,2,24.99,5,4.99,TX
+o1002,2026-06-01T10:22:00Z,c002,Desk Lamp,Home,1,39.50,0,6.50,CA
+o1003,2026-06-01T12:03:00Z,c003,Running Shoes,Sports,1,79.00,10,7.25,NY
+o1004,2026-06-02T08:45:00Z,c004,Yoga Mat,Sports,3,19.95,5,8.10,FL
+o1005,2026-06-02T13:14:00Z,c005,Coffee Grinder,Home,1,54.25,7.5,5.90,WA
+o1006,2026-06-02T15:30:00Z,c006,USB-C Cable,Electronics,4,11.99,0,4.50,IL
+o1007,2026-06-03T09:55:00Z,c007,Water Bottle,Sports,2,18.50,0,5.00,CO
+o1008,2026-06-03T11:42:00Z,c008,Bluetooth Speaker,Electronics,1,99.99,12,6.80,AZ
+o1009,2026-06-03T16:08:00Z,c009,Knife Set,Home,1,89.00,8,7.90,NV
+o1010,2026-06-04T10:12:00Z,c010,Gaming Keyboard,Electronics,1,129.00,15,7.20,GA
+o1011,2026-06-04T14:27:00Z,c011,Foam Roller,Sports,2,22.50,5,5.60,NC
+o1012,2026-06-04T18:39:00Z,c012,Air Purifier,Home,1,149.95,10,9.40,OH

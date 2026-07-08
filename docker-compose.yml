@@ -7,15 +7,67 @@ services:
       POSTGRES_PASSWORD: etl
       POSTGRES_DB: warehouse
     ports:
-      - "5432:5432"
+      - "5436:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+
+  python-etl:
+    build:
+      context: .
+      dockerfile: etl/Dockerfile
+    container_name: airflow_etl_runner
+    environment:
+      SOURCE_CSV: /workspace/data/source/orders_raw.csv
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: warehouse
+      POSTGRES_USER: etl
+      POSTGRES_PASSWORD: etl
+    depends_on:
+      - postgres
+
+  airflow:
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    container_name: airflow_etl_airflow
+    env_file:
+      - ./airflow/.env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://etl:etl@postgres:5432/warehouse
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username admin --password admin --firstname Data --lastname Eng --role Admin --email admin@example.com || true &&
+      airflow standalone
+      "
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./:/opt/pipeline
+    ports:
+      - "8085:8080"
+    depends_on:
+      - postgres
 
   adminer:
     image: adminer:4
     container_name: airflow_etl_adminer
     ports:
-      - "8080:8080"
+      - "8086:8080"
+    depends_on:
+      - postgres
+
+  metabase:
+    image: metabase/metabase:v0.50.29
+    container_name: airflow_etl_metabase
+    ports:
+      - "3004:3000"
     depends_on:
       - postgres
 
